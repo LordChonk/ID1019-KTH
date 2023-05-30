@@ -1,0 +1,67 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+
+\begin{document}
+
+\title{ 
+	\textbf{Morse - Report}
+	}
+\author{Adrian Hjert}
+\date{15/March/2023}
+
+\maketitle
+
+\section*{
+	\underline{Introduction}
+	}
+The aim of this report is to explain the implementation of a morse code encoder and decoder similar to the Huffman coding algorithm that was explored in the previous assignment. The main task is of course to implement the encoding and decoding algorithms along with their respective helper functions. The code is then tested by decoding some secret messages given in the instructions and by encoding and decoding our names.
+	
+	
+	
+	
+\section*{
+	\underline{Methods}
+	}
+\subsection*{
+	\textbf{Setting Up}
+	}
+The tree that we are given requires some translation, so we put it in a map which we can then use to encode a message into morse. This is done in the following manner:
+\begin{minted}{elixir}
+def encode_table() do    #tree to map
+  Enum.reduce((codes(morse(), [])), %{}, fn({char, code}, acc)
+      ->   Map.put(acc, char, code)
+        end)
+     end
+\end{minted}
+We then implement a function that allows us to look up the characters in the map using the \textbf{Map.get/2} function. The lookup function will find the given key and return its corresponding morse code string, provided the key exists in the map, otherwise, the funciton will return \textbf{nil}. One additional setup function is implemented, namely \textbf{codes/2}, which is also a part of the Huffman code from before, albeit slightly different in this case. The function uses pattern matching and based on the results, builds a list of character-code pairs. The tree is traversed recursively depth first where \textit{da} represents the left branches and \textit{di} represents the right branches. Leafs containing relevant characters are added to the list. Aside from the base case where the first argument is \textbf{:nil} returning an empty list, the other cases are as follows:
+\begin{minted}{elixir}
+def codes({:node, :na, da, di}, code) do
+       codes(da, [?- | code]) ++ codes(di, [?. | code])
+     end
+     def codes({:node, char, da, di}, code) do
+       [{char, code}] ++ codes(da, [?- | code]) 
+       ++ codes(di, [?. | code])
+     end
+\end{minted}
+The first of these case depends on the \textbf{:na} atom which is when no character has the given morse code, so the function calles \textbf{codes} and concatenates the results. The latter of the cases has a \textbf{char} as its second element, wherein it concatenates a list of tuples containing the \textbf{char} and its corresponding morse code to the result of \textbf{codes} for \textit{da} and \textit{di}.
+
+\subsection*{
+	\textbf{Encoding}
+	}
+	
+\subsection*{
+	\textbf{Decoding}
+	}
+	
+\section*{
+	\underline{Results and Conclusions}
+	}
+	
+	
+	
+	
+	
+	
+\end{document}
